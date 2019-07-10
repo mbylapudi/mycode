@@ -1,0 +1,25 @@
+---
+- name: Net example
+  hosts: all
+  gather_facts: true
+  vars:
+          ansible_connection: network_cli
+          ansible_network_os: eos
+          ansible_become: yes
+          ansible_become_method: enable
+          ansible_user: admin
+          ansible_ssh_pass: alta3
+
+  tasks:
+          - name: run show version
+            cli_command:
+                    command: show version
+            register: results
+
+          - name: print out the results
+            debug:
+                    var: results.stdout_lines
+
+          - name: copy output to files
+            copy: content="{{results.stdout_lines}}" dest=./{{inventory_hostname}}.txt
+
